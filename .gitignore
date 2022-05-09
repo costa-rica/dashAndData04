@@ -1,0 +1,9 @@
+__pycache__/
+*.ipynb
+*.zip
+*log.txt
+*.docx
+app_package/static/blogs
+app_package/static/images/blog*
+app_package/static/images/people/
+app_package/_logs/
