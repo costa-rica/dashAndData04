@@ -4,15 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
         <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
         
         <!-- Import the Bootstrap stylesheet -->
         <script src="../static/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
 
         <!-- Data Tables -->
-        <script type="text/javascript" src="{{ url_for('static', filename='aOld_js/jquery-3.5.1.js') }}"></script>
-        <script type = "text/javascript"  src="{{ url_for('static', filename='aOld_js/jquery.dataTables.min.js') }}"></script>
-        <script type = "text/javascript"  src="{{ url_for('static', filename='aOld_js/dataTables.bootstrap5.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='aOld_js/jquery-3.5.1.js') }}"></script><!--need this one-->
+        <script type = "text/javascript"  src="{{ url_for('static', filename='aOld_js/jquery.dataTables.min.js') }}"></script><!--need this one-->
+        <link rel="stylesheet" type="text/css" href="../static/aOld_css/responsive.dataTables.min.css"><!--need this one-->
+        <script type="text/javascript" src="../static/aOld_js/dataTables.responsive.min.js"></script><!--need this one-->
+        <link rel="stylesheet" type="text/css" href="../static/aOld_css/jquery.dataTables.min_dashAndData.css"><!--need this one-->
+        <script type="text/javascript" src="../static/aOld_js/jquery.dataTables-1.1.20.min.js"></script><!--need this one-->
+
+        <!-- Maybe I do not need these: -->
+<!-- <script type = "text/javascript"  src="{{ url_for('static', filename='aOld_js/dataTables.bootstrap5.min.js') }}"></script> -->
+        <!-- <script src="../static/aOld_js/moment.min.js"></script> -->
+                <!-- <script type="text/javascript" src="../static/aOld_js/datetime.js"></script> -->
 
     <title>{% block title %}{% endblock %}</title>
 </head>
@@ -35,7 +44,7 @@
       <img id="mobile-exit" class="mobile-menu-exit" src="../static/images/homepage/exit.svg" alt="Close Navigation">
       
       <ul>
-        <li class="nav-link">
+        <li class="nav-link extra_wide">
           <a class="" href="{{ url_for('users.dataTools') }}">Data Tools</a>
         </li>
         <li class="nav-link">
@@ -56,7 +65,7 @@
               data-bs-toggle="dropdown"aria-expanded="false">User</a>
               <div class="dropdown-menu" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="#">Post</a>
-                <a class="dropdown-item" href="{{ url_for('users.home') }}">User Home</a>
+                <a class="dropdown-item" href="{{ url_for('blog.blog_user_home') }}">User Home</a>
                 <a class="dropdown-item" href="{{ url_for('users.logout') }}">Logout</a>
               </div>
         </li>

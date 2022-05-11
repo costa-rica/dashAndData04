@@ -35,18 +35,15 @@ datatools_cage = Blueprint('datatools_cage', __name__)
     
 @datatools_cage.route('/cageCodeSearch',methods=['POST','GET'])
 def cageCodeSearch():
-    # form=CageForm()
-    #Delete download file if exists
-    # if os.path.exists(os.path.join(current_app.static_folder, 'blsCommodity','blsCommodityPPI.xlsx')):
-        # os.remove(os.path.join(current_app.static_folder, 'blsCommodity','blsCommodityPPI.xlsx'))
+
     siteTitle='CAGE Code Lookup'
     searchDictClean={'companyName':'Company Name', 'companyNameSub':'Company Name (Subsidiary)','cageCode': 'CAGE Code',
         'address': 'Address', 'city': 'City', 'state': 'State'}
     if request.method=="POST":
-        # logger_cage.info(f'CAGE POST request made')
+        logger_cage.info(f'CAGE POST request made')
         formDict = request.form.to_dict()
-        del formDict['csrf_token']
-        # logger_terminal.debug(f'formDIct:::{formDict}')
+
+        logger_terminal.debug(f'formDIct:::{formDict}')
         if formDict.get('clearButton'):
             return redirect(url_for('datatools_cage.cageCodeSearch'))
 
@@ -57,6 +54,10 @@ def cageCodeSearch():
         searchStringDict={searchDictClean[i]:j for i,j in searchStringDict.items()}
         exactDict={searchDictClean[i]:j for i,j in exactDict.items()}
         
+
+        logger_terminal.debug(f'searchStringDict:::{searchStringDict}')
+        logger_terminal.debug(f'exactDict:::{exactDict}')
+
         count=0
         for i in searchStringDict.values():
             count=count + len(i)
@@ -65,6 +66,10 @@ def cageCodeSearch():
             return redirect(url_for('datatools_cage.cageCodeSearch'))
 
         df=searchQueryCageToDf(formDict)
+
+        print('df:::')
+        print(df)
+        print('formDict::::', formDict)
         resultsCount = len(df)
         if resultsCount>10000:
             flash(f'Query beyond 10,000 row limit. Must enter more search criteria to narrow search.', 'warning')
@@ -74,7 +79,7 @@ def cageCodeSearch():
             dfResults = df.to_dict('records')
             print('searchStringDict:::',searchStringDict)
             
-            return render_template('cageCodeSearch.html', siteTitle=siteTitle, columnNames=columnNames, dfResults=dfResults,
+            return render_template('datatools/cageCodeSearch.html', siteTitle=siteTitle, columnNames=columnNames, dfResults=dfResults,
                 len=len, searchStringDict=searchStringDict, exactDict=exactDict, searchDictClean=searchDictClean,
                 resultsCount='{:,}'.format(resultsCount))
         if formDict.get('searchCage')=='download':

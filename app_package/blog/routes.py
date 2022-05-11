@@ -8,7 +8,8 @@ from sqlalchemy import func
 import json
 from flask_login import login_user, current_user, logout_user, login_required
 from app_package.blog.forms import BlogPostForm
-from app_package.blog.utils import wordToJson
+from app_package.blog.utils import wordToJson, blogs_dict_dict_util, \
+    ordered_blog_dict_dict_util, blog_dicts_for_index_util
 from app_package.models import Users, Posts
 from app_package import db
 from sqlalchemy import func 
@@ -52,45 +53,22 @@ def blog_index():
     blogs_file_name_list.remove('uploaded_word')
     
     #get all blog jsons into blogs_dict, key names 'blog01', values corresponding json file dicts
-    blogs_dict={}
-    for i in blogs_file_name_list:
-        blog_dict_file = os.path.join(blog_json_files_folder,i)
-        with open(blog_dict_file,'r') as f:
-            blogs_dict[i[:-5]] = json.load(f)
-            f.close
+    blogs_dict_dict=blogs_dict_dict_util(blogs_file_name_list, blog_json_files_folder)
 
     blogs_file_name_list=[i[:-5] for i in blogs_file_name_list]
 
+    date_pub_list =[j['date_published'][1] for i,j in blogs_dict_dict.items()]
 
-    blog_dicts = {}
-    for i in blogs_file_name_list:
-        blog_dict={}
+    date_pub_list.sort(reverse=True)
 
-        blog_dict['blog_name']=i
-        #Get title 
-        blog_dict['title']=[blogs_dict[i]["1"][1]]
-        #Get first paragraph
-        if blogs_dict[i].get('index_description'):
-            blog_dict['index_description']=blogs_dict[i]["index_description"]
-        else:
-            if blogs_dict[i]["3"][1] !='':
-                blog_dict['index_description']=blogs_dict[i]["3"][1]
-            else:
-                blog_dict['index_description']=blogs_dict[i]["4"][1]
+    #ordered_blog_dict_dict is like blogs_dict_dict, each key/value is entered in by most recent date_published
+    ordered_blog_dict_dict=ordered_blog_dict_dict_util(date_pub_list, blogs_dict_dict)
 
-        #Get location
-        if blogs_dict[i].get('app_location'):
-            blog_dict['app_location']=blogs_dict[i]["app_location"][1]
-        
-        if blogs_dict[i].get('date_published'):
+    # blog_dicts_for_index is a abbrev dictionary of blog_name:items needed for blog_index.html
+    # blog_dicts_for_index is sorted by the previous lines
+    blog_dicts_for_index = blog_dicts_for_index_util(ordered_blog_dict_dict)
 
-            blog_dict['date_published']=blogs_dict[i]['date_published'][1]
-        
-        # add blog_dict to blog_dicts
-        blog_dicts[i]=blog_dict
-
-
-    return render_template('blog/index.html', blog_dicts=blog_dicts)
+    return render_template('blog/index.html', blog_dicts_for_index=blog_dicts_for_index)
     
 @blog.route("/<blog_name>", methods=["GET"])
 def blog_template(blog_name):
@@ -196,9 +174,11 @@ def blog_user_home():
     all_posts=Posts.query.all()
     posts_details_list=[]
     for i in all_posts:
-        posts_details_list.append([i.id, i.blog_title, i.blog_description, i.json_file, i.word_doc])
+        posts_details_list.append([i.id, i.blog_title, i.date_published.strftime("%m/%d/%Y"),
+            i.blog_description, i.json_file, i.word_doc])
 
-    column_names=['id', 'blog_title', 'blog_description','json_file', 'word_doc']
+    column_names=['id', 'blog_title','date_published',
+         'blog_description','json_file', 'word_doc']
 
     if request.method == 'POST':
         formDict=request.form.to_dict()

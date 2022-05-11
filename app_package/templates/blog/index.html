@@ -9,7 +9,7 @@
     <form method=POST>
 
         <ul class="data_tools_list">
-            {% for _, blog in blog_dicts.items() %}
+            {% for _, blog in blog_dicts_for_index.items() %}
                 
             <li>
                 <a href="{{ url_for('blog.blog_template', blog_name=blog['blog_name']) }}">

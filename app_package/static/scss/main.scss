@@ -330,8 +330,6 @@ section.data_tools_main {
 .exactCheck label {text-align: center;}
 
 .cageButton{float: right;}
-//.criteriaLabel{float: right;}
-
 
 .searchCriteriaRows{
     display: flex;
@@ -339,9 +337,6 @@ section.data_tools_main {
 .criteriaLabel{
     padding: 0 0 0 5px;
     min-width: 220px;
-}
-.text_color{
-    color:var(--bs-dark);
 }
 
 
@@ -363,11 +358,12 @@ section.data_tools_main {
 .lightPadding{padding-top:.5em;padding-left:1em;
 	padding-bottom:.5em;padding-right:1em;}
 .table_background{background-color: var(--bs-gray-400);
-    padding: 20px,20px,20px,20px;
-    margin: 20px,20px,20px,20px;
+    // padding: 20px,20px,20px,20px;
+    // margin: 20px,20px,20px,20px;
     border-radius: .5em;
 }
-.table_background_sub{margin-top: 1em;
+.table_background_sub{
+    margin-top: 1em;
     padding-right: 1em;padding-left: 1em;
     padding-top: 1em;padding-bottom: 1em;
     background-color: var(--bs-gray-400);
@@ -628,7 +624,6 @@ section.blog_post{
             }
         }
     }
-
 }
 
 /*Blog Home*/
@@ -663,10 +658,10 @@ section.blog_home{
         right: -5px;
     }
     //Below are bootstrap table row attritbutes for non id columns
-    table td{
-        background-color: var(--bs-gray-700);
-    }
-/*
+    // table td{
+    //     background-color: var(--bs-gray-700);
+    // }
+
     //ISN"T Working But Might with some reserach
     //Below are bootstrap table row attritbutes for id column ODDs
     // table.dataTable.display tbody tr.odd>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd>.sorting_1{background-color:#f1f1f1}
@@ -674,7 +669,7 @@ section.blog_home{
     //Below are bootstrap table row attritbutes for id column EVENS
     // table.dataTable.order-column tbody tr>.sorting_1,table.dataTable.order-column tbody tr>.sorting_2,table.dataTable.order-column tbody tr>.sorting_3,table.dataTable.display tbody tr>.sorting_1,table.dataTable.display tbody tr>.sorting_2,table.dataTable.display tbody tr>.sorting_3{background-color:#fafafa}
     table.dataTable.order-column tbody tr>.sorting_1,table.dataTable.order-column tbody tr>.sorting_2,table.dataTable.order-column tbody tr>.sorting_3,table.dataTable.display tbody tr>.sorting_1,table.dataTable.display tbody tr>.sorting_2,table.dataTable.display tbody tr>.sorting_3{background-color:var(--bs-success)}
-    */
+    
 }
 
 
@@ -869,12 +864,16 @@ section.LoginSection {
             }
             nav{
                 ul {
+                    .extra_wide{
+                        width:fit-content;
+                        white-space: nowrap;
+                    }
                     li {
-                        
+                        // padding:0 5px 0 5px;
                         background-color: var(--bs-teal);
                         a {
                             padding-bottom:5px;
-                            font-size: .75em;
+                            font-size: .6em;
                         }
                     }
                 }

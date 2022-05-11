@@ -11748,10 +11748,6 @@ section.data_tools_main #logo_div_bls img {
   min-width: 220px;
 }
 
-.text_color {
-  color: var(--bs-dark);
-}
-
 /*GetSts*/
 .getSts p {
   margin-left: 1%;
@@ -11791,8 +11787,6 @@ section.data_tools_main #logo_div_bls img {
 
 .table_background {
   background-color: var(--bs-gray-400);
-  padding: 20px, 20px, 20px, 20px;
-  margin: 20px, 20px, 20px, 20px;
   border-radius: 0.5em;
 }
 
@@ -12055,15 +12049,6 @@ section.blog_post .blog_form_div .blog_form_buttons .button_div_right .btn_custo
 /*Blog Home*/
 section.blog_home {
   padding: 150px 0 60px 30px;
-  /*
-      //ISN"T Working But Might with some reserach
-      //Below are bootstrap table row attritbutes for id column ODDs
-      // table.dataTable.display tbody tr.odd>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd>.sorting_1{background-color:#f1f1f1}
-      table.dataTable.display tbody tr.odd>.sorting_1,table.dataTable.order-column.stripe tbody tr.odd>.sorting_1{background-color:var(--bs-cyan)}
-      //Below are bootstrap table row attritbutes for id column EVENS
-      // table.dataTable.order-column tbody tr>.sorting_1,table.dataTable.order-column tbody tr>.sorting_2,table.dataTable.order-column tbody tr>.sorting_3,table.dataTable.display tbody tr>.sorting_1,table.dataTable.display tbody tr>.sorting_2,table.dataTable.display tbody tr>.sorting_3{background-color:#fafafa}
-      table.dataTable.order-column tbody tr>.sorting_1,table.dataTable.order-column tbody tr>.sorting_2,table.dataTable.order-column tbody tr>.sorting_3,table.dataTable.display tbody tr>.sorting_1,table.dataTable.display tbody tr>.sorting_2,table.dataTable.display tbody tr>.sorting_3{background-color:var(--bs-success)}
-      */
 }
 section.blog_home .table_contents {
   font-size: 0.7em;
@@ -12087,8 +12072,11 @@ section.blog_home .dash_id_button:hover {
   top: -5px;
   right: -5px;
 }
-section.blog_home table td {
-  background-color: var(--bs-gray-700);
+section.blog_home table.dataTable.display tbody tr.odd > .sorting_1, section.blog_home table.dataTable.order-column.stripe tbody tr.odd > .sorting_1 {
+  background-color: var(--bs-cyan);
+}
+section.blog_home table.dataTable.order-column tbody tr > .sorting_1, section.blog_home table.dataTable.order-column tbody tr > .sorting_2, section.blog_home table.dataTable.order-column tbody tr > .sorting_3, section.blog_home table.dataTable.display tbody tr > .sorting_1, section.blog_home table.dataTable.display tbody tr > .sorting_2, section.blog_home table.dataTable.display tbody tr > .sorting_3 {
+  background-color: var(--bs-success);
 }
 
 /*Error Page*/
@@ -12262,12 +12250,16 @@ section.LoginSection .container .right_part {
   section.navbar_section .navbar_custom .nav_middle h2 {
     font-size: 20px;
   }
+  section.navbar_section .navbar_custom nav ul .extra_wide {
+    width: fit-content;
+    white-space: nowrap;
+  }
   section.navbar_section .navbar_custom nav ul li {
     background-color: var(--bs-teal);
   }
   section.navbar_section .navbar_custom nav ul li a {
     padding-bottom: 5px;
-    font-size: 0.75em;
+    font-size: 0.6em;
   }
 
   /*Home 755px*/

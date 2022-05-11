@@ -2,9 +2,58 @@ from docx2python import docx2python
 import os
 import json
 from flask import current_app
-import time
-from datetime import datetime
-import pathlib
+
+
+def blogs_dict_dict_util(blogs_file_name_list, blog_json_files_folder):
+    blogs_dict_dict_result={}
+    for i in blogs_file_name_list:
+        blog_dict_file = os.path.join(blog_json_files_folder,i)
+        with open(blog_dict_file,'r') as f:
+            blogs_dict_dict_result[i[:-5]] = json.load(f)
+            f.close
+    return blogs_dict_dict_result
+
+#ordered_blog_dict_dict is dict where each key/value is entered in by most recent date_published
+def ordered_blog_dict_dict_util(date_pub_list, blogs_dict_dict):
+    ordered_blog_dict_dict={}
+    for date in date_pub_list:
+        for temp_dict in list(blogs_dict_dict.values()):
+            temp_blog_name=temp_dict['blog_name']
+            temp_blog_date=temp_dict['date_published'][1]
+            if date == temp_blog_date:
+                ordered_blog_dict_dict[temp_blog_name] = temp_dict
+                del blogs_dict_dict[temp_blog_name]
+    return ordered_blog_dict_dict
+
+# blog_dicts_for_index is a abbrev dictionary of blog_name:items needed for blog_index.html
+def blog_dicts_for_index_util(ordered_blog_dict_dict):
+    blog_dicts_for_index = {}
+    for blog_name,blog_dict_from_json in ordered_blog_dict_dict.items():
+        temp_blog_dict={}
+
+        temp_blog_dict['blog_name']=blog_name
+        #Get title 
+        temp_blog_dict['title']=[blog_dict_from_json["1"][1]]
+        #Get first paragraph
+        if blog_dict_from_json.get('index_description'):
+            temp_blog_dict['index_description']=blog_dict_from_json["index_description"]
+        else:
+            if blog_dict_from_json.get("3")[1] !='':
+                temp_blog_dict['index_description']=blog_dict_from_json["3"][1]
+            else:
+                temp_blog_dict['index_description']=blog_dict_from_json["4"][1]
+
+        #Get location
+        if blog_dict_from_json.get('app_location'):
+            temp_blog_dict['app_location']=blog_dict_from_json["app_location"][1]
+        
+        if blog_dict_from_json.get('date_published'):
+
+            temp_blog_dict['date_published']=blog_dict_from_json['date_published'][1]
+        
+        # add blog_dict to blog_dicts
+        blog_dicts_for_index[blog_name]=temp_blog_dict
+    return blog_dicts_for_index
 
 def wordToJson(word_doc_file_name, word_doc_path, blog_name, date_published, description='',link=''):
     
