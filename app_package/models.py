@@ -32,7 +32,7 @@ class Users(db.Model, UserMixin):
         return User.query.get(user_id)
 
     def __repr__(self):
-        return f"User('{self.id}','{self.email}','{self.permission}')"
+        return f"User(id: {self.id},email: {self.email}, permission: {self.permission})"
 
 class Posts(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,3 +48,17 @@ class Posts(db.Model):
     json_file = db.Column(db.Text)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
 
+    def __repr__(self):
+        return f"Posts(id: {self.id},blog_title: {self.blog_title}, " \
+            f"date_published: {self.date_published}, timestamp: {self.timestamp})"
+
+# class PostNew(db.Model):
+#     id = db.Column(db.Integer, primary_key=True)
+#     dict_key = db.Column(db.Text)
+#     row_tag_charaters = db.Column(db.Text)
+#     row_tag = db.Column(db.Text)
+#     row_going_into_html = db.Column(db.Text)
+    
+#     def __repr__(self):
+#         return f"Posts({self.id},{self.dict_key}, row_tag_characters: {self.row_tag_charaters}, " \
+#             f"row_tag: {self.row_tag}, row_going_into_html: {self.row_going_into_html})"

@@ -57,6 +57,9 @@ def blog_dicts_for_index_util(ordered_blog_dict_dict):
 
 def wordToJson(word_doc_file_name, word_doc_path, blog_name, date_published, description='',link=''):
     
+    print('word_doc_path:::', word_doc_path)
+    print('word_doc_file_name:::', word_doc_file_name)
+
     doc_result_html = docx2python(os.path.join(word_doc_path,word_doc_file_name),html=True)
     
     #all images saved
@@ -75,6 +78,9 @@ def wordToJson(word_doc_file_name, word_doc_path, blog_name, date_published, des
         blog_dict["app_location"] = ['href',link]
 
     count=1
+
+    print('***doc_result_html.document[0] (in wordToJson)*** ')
+    print(doc_result_html.document[0])
 
     for i in doc_result_html.document[0][0][0]:
 
@@ -102,15 +108,59 @@ def wordToJson(word_doc_file_name, word_doc_path, blog_name, date_published, des
             blog_dict[count]=['h2',i[4:-5]]
         elif i[:29]=='<span style="font-size:20pt">':
             blog_dict[count]=['indent',i[29:-len('</span>')]]
-    #code snippet
+        #code snippet
         elif i[:41]=='<span style="background-color:lightGray">':
             blog_dict[count]=['codeblock',i[41:-len('</span>')]]
+        #codeblock_type1
+        elif i.find(r'<span style="color:FFFFFF">')>-1:
+            adj=i.find(r'<span style="color:FFFFFF">')
+            blog_dict[count]=['codeblock_type1',i[27+adj:-len('</span>')]]
         else:
             blog_dict[count]=['',i]
         count+=1
-    
-    json_file_name = blog_name+'.json'
 
-    with open(os.path.join(current_app.config['STATIC_PATH'], 'blogs',json_file_name),'w') as output:
-        json.dump(blog_dict,output)
+    # json_file_name = blog_name+'.json'
+
+    return blog_dict
+
+
+def consecutive_row_util(blog_dict):
+    blog_dict_reverse = {i:blog_dict[i] for i in reversed(blog_dict.keys())}
+    new_dict={}; count=1
+    for i,j in blog_dict_reverse.items():
+        if count==1:
+            new_dict[i]=j
+            im2='';jm2=['',''];im1=i;jm1=j
+        elif j[0]==jm1[0]=='codeblock_type1':
+            new_dict[i]=[j[0],j[1]+'<br>'+jm1[1]]
+            del new_dict[im1]
+            i_m2='';jm2=['',''];im1=i;jm1=[j[0],j[1]+'<br>'+jm1[1]]
+        elif j[0]==jm2[0]=='codeblock_type1' and jm1[0]=='new lines':
+            new_dict[i]=[j[0],j[1]+'<br>'+jm1[1]+'<br>'+jm2[1]]
+            del new_dict[im1];del new_dict[im2]
+            im1=i;jm1=[j[0],j[1]+'<br>'+jm1[1]+'<br>'+jm2[1]];im2='';jm2=['','']
+        elif j[0]!=jm1[0]:
+            new_dict[i]=j
+            im2=im1;jm2=jm1;im1=i;jm1=j
+        else:
+            new_dict[i]=j
+            im2=im1;jm2=jm1;im1=i;jm1=j
+        count+=1
+    
+    new_dict_reverse = {i:new_dict[i] for i in reversed(new_dict.keys())}
+    new_dict_reverse_formatted =json.dumps(new_dict_reverse, ensure_ascii=False).encode('utf8')
+
+    #convert to a dictionary
+    dictWithEscaping=json.loads(new_dict_reverse_formatted.decode())
+
+    #Script to remove double quoutes from links, but any double qoutes in j[1]
+    dictNoEscaping={i:([j[0],j[1].replace('"','')] if type(j)==list else j )for i,j in dictWithEscaping.items() }
+    # dictNoEscaping
+    #unfortunately, this dict uses single qoutes. in order to convert it to double qoutes for json, we need json.dumps
+
+    #convert dictNoEscaping into a string with double qoutes (i.e "keys":"values")
+    stringNoEscaping=json.dumps(dictNoEscaping, ensure_ascii=False).encode('utf8')
+
+
+    return stringNoEscaping
 

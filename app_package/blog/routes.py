@@ -9,7 +9,7 @@ import json
 from flask_login import login_user, current_user, logout_user, login_required
 from app_package.blog.forms import BlogPostForm
 from app_package.blog.utils import wordToJson, blogs_dict_dict_util, \
-    ordered_blog_dict_dict_util, blog_dicts_for_index_util
+    ordered_blog_dict_dict_util, blog_dicts_for_index_util, consecutive_row_util
 from app_package.models import Users, Posts
 from app_package import db
 from sqlalchemy import func 
@@ -76,6 +76,7 @@ def blog_template(blog_name):
     blog_json_files_folder=os.path.join(current_app.config['STATIC_PATH'], 'blogs')
     blog_dict_file = os.path.join(blog_json_files_folder,blog_name+'.json')
     
+    # Problem loading values with double qoutes
     with open(blog_dict_file) as blog_dict_file:
         blog_dict = json.load(blog_dict_file)
     
@@ -118,22 +119,39 @@ def blog_post():
         #get blog_id
         blogs_file_name_list = os.listdir(blog_json_files_folder)
         blogs_file_name_list.remove('uploaded_word')
+        # print('blogs_file_name_list::::', blogs_file_name_list)
         blog_int_value_list = [int(i[4:8]) for i in blogs_file_name_list]
         if len(blog_int_value_list)>0:
+            # print('***This is where the ')
             #this db.func..Posts.id get's the max id from the Posts table
             blog_name = 'blog'+str(db.session.query(func.max(Posts.id)).first()[0]+1).zfill(4)
         else:
             blog_name = 'blog0001'
+            print('***this shouldnot show up*****')
 
+        print('blog_name:::', blog_name)
         #get word_doc_file_name
         word_doc_file_name = uploaded_file.filename
 
         #get date_published
         date_published = formDict.get('date_published')
 
-        wordToJson(word_doc_file_name, word_doc_path, blog_name, date_published,
+        blog_dict=wordToJson(word_doc_file_name, word_doc_path, blog_name, date_published,
             description=formDict.get('blog_description'),link=formDict.get('link_to_app'))
         
+        # print('***blog_dict (after wordToJson)*** ')
+        # print(blog_dict)
+
+        #consecutive row similar tag script. Returns string in dict form.
+        new_dict_reverse_formatted= json.loads(consecutive_row_util(blog_dict))
+
+        # print('new_dict_reverse_formatted**')
+        # print(type(new_dict_reverse_formatted))
+        # print(new_dict_reverse_formatted)
+        with open(os.path.join(current_app.config['STATIC_PATH'], 'blogs',blog_name+'.json'),
+            'w') as output:
+            json.dump(new_dict_reverse_formatted,output)
+
         #open json file with new blog post
         with open(os.path.join(current_app.config['STATIC_PATH'], 'blogs',blog_name+'.json'),'r') as f:
             blog_dict = json.load(f)
